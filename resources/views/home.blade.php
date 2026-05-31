@@ -34,7 +34,7 @@
         <br>
         <br>
         <br>
-        Precio de la reserva: $60.000
+        Precio de la reserva: $70.000
     </p>
 
 
