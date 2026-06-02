@@ -71,7 +71,7 @@ body {
 /* Main content */
 .main-content {
     margin-left: var(--sidebar-width);
-    padding: 24px 30px;
+    
     width: calc(100% - var(--sidebar-width));
     min-height: 100vh;
     background-color: var(--bg-main);
