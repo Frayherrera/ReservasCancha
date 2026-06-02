@@ -18,18 +18,18 @@ Auth::routes();
 // Ruta después de autenticación (HomeController)
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
-// Rutas de horarios (públicas: solo ver)
-Route::resource('horarios', HorarioController::class)->only(['index', 'show']);
-
 // Rutas de horarios (solo admin: crear, editar, eliminar)
 Route::middleware(['auth', 'role:administrador'])->group(function () {
     Route::get('/horarios/create', [HorarioController::class, 'create'])->name('horarios.create');
-    Route::get('/horarios/ir', [HorarioController::class, 'ir'])->name('horarios.ir');
     Route::post('/horarios', [HorarioController::class, 'store'])->name('horarios.store');
     Route::get('/horarios/{horario}/edit', [HorarioController::class, 'edit'])->name('horarios.edit');
     Route::put('/horarios/{horario}', [HorarioController::class, 'update'])->name('horarios.update');
     Route::delete('/horarios/{horario}', [HorarioController::class, 'destroy'])->name('horarios.destroy');
 });
+
+// Rutas de horarios (públicas: solo ver) — deben ir DESPUÉS de rutas específicas
+Route::get('/horarios', [HorarioController::class, 'index'])->name('horarios.index');
+Route::get('/horarios/{horario}', [HorarioController::class, 'show'])->name('horarios.show');
 
 // Rutas para gestionar reservas
 Route::post('/reservas', [ReservaController::class, 'store'])->middleware('auth')->name('reservas.store');

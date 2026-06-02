@@ -20,10 +20,7 @@ class HorarioController extends Controller
         return view('horarios.create');
     }
 
-    public function ir()
-    {
-        return json_decode(Horario::with(['reserva.user'])->orderBy('created_at', 'desc')->get());
-    }
+
 
     public function store(Request $request)
     {
