@@ -49,4 +49,14 @@ class User extends Authenticatable
     {
         return $this->hasMany(Reserva::class);
     }
+
+    public function resenas()
+    {
+        return $this->hasMany(Resena::class);
+    }
+
+    public function puntuacionPromedio()
+    {
+        return $this->resenas()->avg('puntuacion');
+    }
 }

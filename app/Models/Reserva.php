@@ -40,4 +40,19 @@ class Reserva extends Model
     {
         return $this->belongsTo(Precio::class);
     }
+
+    public function pagos()
+    {
+        return $this->hasMany(Pago::class);
+    }
+
+    public function pagoAprobado()
+    {
+        return $this->hasOne(Pago::class)->where('estado', 'Pagado');
+    }
+
+    public function resena()
+    {
+        return $this->hasOne(Resena::class);
+    }
 }
