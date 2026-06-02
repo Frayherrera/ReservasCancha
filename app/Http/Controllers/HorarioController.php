@@ -92,10 +92,10 @@ class HorarioController extends Controller
             // Contar cuántos horarios se crearon
             $cantidadHorarios = count($horarios);
 
-            return redirect()->route('horarios.index')
+            return redirect()->route('horarios.create')
                 ->with('success', "Se crearon {$cantidadHorarios} horarios exitosamente.");
         } catch (\Exception $e) {
-            return redirect()->route('horarios.index')
+            return redirect()->route('horarios.create')
                 ->with('error', 'Ocurrió un error al crear los horarios.');
         }
     }

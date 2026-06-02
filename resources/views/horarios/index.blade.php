@@ -256,7 +256,7 @@
                     <td>{{ \Carbon\Carbon::parse($horario->hora)->format('H:i') }}</td>
                     <td>
                         @if($horario->reserva)
-                        Reservada: {{ $horario->reserva->user->name }} <!-- Nombre del cliente que reservó -->
+                        Reservada <!-- Nombre del cliente que reservó -->
                         @else
                         @if($horario->estado == 'Disponible')
                         <span class="estado {{ strtolower($horario->estado) }}">
@@ -268,62 +268,59 @@
                         @endif
                     </td>
                     <td>
-                        @if($horario->estado == 'Disponible')
-                        @auth
-                        <button type="button"
-                            class="btn-reservar"
-                            data-bs-toggle="modal"
-                            data-bs-target="#confirmModal{{ $horario->id }}"
-                            data-hora="{{ \Carbon\Carbon::parse($horario->hora)->format('H:i') }}"
-                            data-fecha="{{ \Carbon\Carbon::parse($horario->fecha)->format('d/m/Y') }}">
-                            Reservar
-                        </button>
+                        <div class="action-buttons">
+                            @if($horario->estado == 'Disponible')
+                                @auth
+                                    <button type="button"
+                                        class="btn-reservar"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#confirmModal{{ $horario->id }}"
+                                        data-hora="{{ \Carbon\Carbon::parse($horario->hora)->format('H:i') }}"
+                                        data-fecha="{{ \Carbon\Carbon::parse($horario->fecha)->format('d/m/Y') }}">
+                                        Reservar
+                                    </button>
 
-                        <!-- Modal de Confirmación -->
-                        <div class="modal fade" id="confirmModal{{ $horario->id }}" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
-                            <div class="modal-dialog modal-confirm">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="confirmModalLabel">Confirmar Reserva</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    <!-- Modal de Confirmación -->
+                                    <div class="modal fade" id="confirmModal{{ $horario->id }}" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog modal-confirm">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="confirmModalLabel">Confirmar Reserva</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    ¿Deseas reservar el horario del día {{ \Carbon\Carbon::parse($horario->fecha)->format('d/m/Y') }}
+                                                    a las {{ \Carbon\Carbon::parse($horario->hora)->format('H:i') }}?
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <form action="{{ route('reservas.store') }}" method="POST">
+                                                        @csrf
+                                                        <input type="hidden" name="horario_id" value="{{ $horario->id }}">
+                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                                        <button type="submit" class="btn btn-primary">Confirmar Reserva</button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div class="modal-body">
-                                        ¿Deseas reservar el horario del día {{ \Carbon\Carbon::parse($horario->fecha)->format('d/m/Y') }}
-                                        a las {{ \Carbon\Carbon::parse($horario->hora)->format('H:i') }}?
-                                    </div>
-                                    <div class="modal-footer">
-                                        <form action="{{ route('reservas.store') }}" method="POST">
-                                            @csrf
-                                            <input type="hidden" name="horario_id" value="{{ $horario->id }}">
-                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                                            <button type="submit" class="btn btn-primary">Confirmar Reserva</button>
-                                        </form>
-                                    </div>
+                                @else
+                                    <button type="button" class="btn-reservar" onclick="alert('Debes iniciar sesión para realizar una reserva.');">Reservar</button>
+                                @endauth
+                            @else
+                                <button class="btn-disabled" disabled>X</button>
+                            @endif
+
+                            @can('crear horarios')
+                                <div class="btn-group mt-2">
+                                    <a href="{{ route('horarios.edit', $horario) }}" class="btn btn-sm btn-warning">Editar</a>
+                                    <form action="{{ route('horarios.destroy', $horario) }}" method="POST" style="display:inline" onsubmit="event.preventDefault(); confirmarEliminacion(this);">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-sm btn-danger">Eliminar</button>
+                                    </form>
                                 </div>
-                            </div>
+                            @endcan
                         </div>
-                        @else
-                        <button type="button"
-                            class="btn-reservar"
-                            onclick="alert('Debes iniciar sesión para realizar una reserva.');">
-                            Reservar
-                        </button>
-                        @endauth
-                        @else
-                        <button class="btn-disabled" disabled>X</button>
-                        @endif
-
-                        @can('crear horarios')
-                        <div style="display: flex; gap: 5px; margin-top: 5px;">
-                            <a href="{{ route('horarios.edit', $horario) }}" class="btn btn-sm btn-warning">Editar</a>
-                            <form action="{{ route('horarios.destroy', $horario) }}" method="POST" style="display:inline"
-                                onsubmit="event.preventDefault(); confirmarEliminacion(this);">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn btn-sm btn-danger">Eliminar</button>
-                            </form>
-                        </div>
-                        @endcan
                     </td>
                 </tr>
                 @endforeach
@@ -429,6 +426,30 @@
         background: #f5f5f5;
         border-radius: 4px;
         color: #666;
+    }
+
+    /* Action buttons layout */
+    .action-buttons {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .action-buttons .btn-group {
+        display: flex;
+        gap: 6px;
+    }
+
+    .action-buttons .btn-reservar {
+        padding: 6px 12px;
+        font-size: 0.95rem;
+        border-radius: 4px;
+    }
+
+    .btn-disabled {
+        padding: 6px 12px;
+        border-radius: 4px;
     }
 </style>
 @endsection
