@@ -22,6 +22,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'blocked',
     ];
 
     /**
@@ -41,7 +42,9 @@ class User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'blocked' => 'boolean',
     ];
+
     public function reservas()
     {
         return $this->hasMany(Reserva::class);

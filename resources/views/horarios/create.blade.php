@@ -12,6 +12,25 @@
 </head>
 @section('main')
 <div class="crear-horario-container">
+    @if(session('error'))
+    <script>
+        Swal.fire({ icon: 'error', title: 'Error', text: "{{ session('error') }}" });
+    </script>
+    @endif
+
+    @if($errors->any())
+    <script>
+        Swal.fire({ icon: 'error', title: 'Error', text: "{{ $errors->first('general') ?: 'Error en los datos ingresados.' }}" });
+    </script>
+    <div class="alert alert-danger">
+        <ul class="mb-0">
+            @foreach($errors->all() as $error)
+            <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+    @endif
+
     <h2 class="form-title">Crear Horarios</h2>
 
     <form action="{{ route('horarios.store') }}" method="POST" id="horariosForm">
@@ -51,7 +70,7 @@
             <label class="form-label">Estado</label>
             <select name="estado" class="form-select" required>
                 <option value="Disponible">Disponible</option>
-                <option value="Ocupado">Ocupado</option>
+                <option value="No Disponible">No Disponible</option>
             </select>
         </div>
     
@@ -230,12 +249,8 @@ function updatePreview() {
             li.className = 'preview-item';
             
             // Formatear la fecha para mostrar
-            const fechaFormateada = new Date(fecha).toLocaleDateString('es-ES', {
-                weekday: 'long',
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric'
-            });
+            const partes = fecha.split('-');
+            const fechaFormateada = partes[2] + '/' + partes[1] + '/' + partes[0];
             
             li.innerHTML = `
                 <div class="preview-item-content">
@@ -343,6 +358,11 @@ document.getElementById('horariosForm').addEventListener('submit', function (eve
 }
 
 .preview-status.ocupado {
+    background-color: #fee2e2;
+    color: #991b1b;
+}
+
+.preview-status.no.disponible {
     background-color: #fee2e2;
     color: #991b1b;
 }

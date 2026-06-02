@@ -67,7 +67,7 @@
                         </span>
                     </td>
                     <td>{{ $reserva->precio->valor }}</td>
-                    <td>{{ $reserva->horario->hora }}</td>
+                    <td>{{ \Carbon\Carbon::parse($reserva->horario->hora)->format('H:i') }}</td>
 
                     <td>
                         <form action="{{ route('reservas.aprobar', $reserva->id) }}" method="post" class="d-inline-block">

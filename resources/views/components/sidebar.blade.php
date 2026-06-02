@@ -10,7 +10,7 @@
         @if(auth()->user()->hasRole('administrador'))
         <a href="{{route('horarios.create')}}" class="nav-item">Crear horarios</a>
         <a href="{{route('reservas.index')}}" class="nav-item">Reservas</a>
-
+        <a href="{{route('admin.users.index')}}" class="nav-item">Usuarios</a>
         @endif
 
         <a href="{{route('user.edit')}}" class="nav-item">Configurar</a>

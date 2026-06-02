@@ -211,6 +211,20 @@
         </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    @if ($errors->isNotEmpty())
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            @if (old('name'))
+                var modalEl = document.getElementById('registerModal');
+            @elseif ($errors->has('email'))
+                var modalEl = document.getElementById('loginModal');
+            @endif
+            if (modalEl) {
+                new bootstrap.Modal(modalEl).show();
+            }
+        });
+    </script>
+    @endif
 
     @endsection
 

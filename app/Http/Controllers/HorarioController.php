@@ -20,18 +20,11 @@ class HorarioController extends Controller
         return view('horarios.create');
     }
 
-    // Guardar el nuevo horario en la base de datos
-    // public function store(Request $request)
-    // {
-    //     $request->validate([
-    //         'hora' => 'required|string',
-    //         'estado' => 'required|in:Disponible,No disponible',
-    //     ]);
+    public function ir()
+    {
+        return json_decode(Horario::with(['reserva.user'])->orderBy('created_at', 'desc')->get());
+    }
 
-    //     Horario::create($request->all());
-
-    //     return redirect()->route('horarios.index')->with('success', 'Horario creado exitosamente.');
-    // }
     public function store(Request $request)
     {
         try {
@@ -65,7 +58,7 @@ class HorarioController extends Controller
                         }
                     },
                 ],
-                'estado' => 'required|in:Disponible,Ocupado',
+                'estado' => 'required|in:Disponible,No Disponible',
             ]);
 
             // Extraer las horas de inicio y fin
@@ -105,9 +98,8 @@ class HorarioController extends Controller
             return redirect()->route('horarios.index')
                 ->with('success', "Se crearon {$cantidadHorarios} horarios exitosamente.");
         } catch (\Exception $e) {
-
-
-            return redirect()->route('horarios.index');
+            return redirect()->route('horarios.index')
+                ->with('error', 'Ocurrió un error al crear los horarios.');
         }
     }
 
@@ -127,11 +119,27 @@ class HorarioController extends Controller
     public function update(Request $request, Horario $horario)
     {
         $request->validate([
-            'hora' => 'required|string',
-            'estado' => 'required|in:Disponible,No disponible',
+            'fecha' => 'required|date',
+            'hora' => 'required|date_format:H:i',
+            'estado' => 'required|in:Disponible,No Disponible',
         ]);
 
-        $horario->update($request->all());
+        // Verificar si ya existe otro horario con la misma fecha y hora
+        $exists = Horario::where('fecha', $request->fecha)
+            ->where('hora', $request->hora.':00')
+            ->where('id', '!=', $horario->id)
+            ->exists();
+
+        if ($exists) {
+            return back()->withInput()
+                ->withErrors(['general' => 'Ya existe un horario con esa fecha y hora.']);
+        }
+
+        $horario->update([
+            'fecha' => $request->fecha,
+            'hora' => $request->hora.':00',
+            'estado' => $request->estado,
+        ]);
 
         return redirect()->route('horarios.index')->with('success', 'Horario actualizado exitosamente.');
     }

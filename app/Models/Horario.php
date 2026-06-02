@@ -9,7 +9,10 @@ class Horario extends Model
 {
     protected $fillable = ['fecha', 'hora', 'estado'];
 
-    protected $dates = ['fecha', 'hora'];
+    protected $casts = [
+        'fecha' => 'date:Y-m-d',
+        'hora' => 'string',
+    ];
 
     public function reserva()
     {

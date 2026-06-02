@@ -8,7 +8,26 @@
     <link rel="stylesheet" href="css/stylesWelcome.css">
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        function confirmarEliminacion(form) {
+            Swal.fire({
+                title: '¿Eliminar horario?',
+                text: 'Esta acción no se puede deshacer.',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Sí, eliminar',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.submit();
+                }
+            });
+        }
+    </script>
 
 </head>
 @section('main')
@@ -250,6 +269,7 @@
                     </td>
                     <td>
                         @if($horario->estado == 'Disponible')
+                        @auth
                         <button type="button"
                             class="btn-reservar"
                             data-bs-toggle="modal"
@@ -275,7 +295,6 @@
                                         <form action="{{ route('reservas.store') }}" method="POST">
                                             @csrf
                                             <input type="hidden" name="horario_id" value="{{ $horario->id }}">
-                                            <input type="hidden" name="user_id" value="{{ auth()->id() }}">
                                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
                                             <button type="submit" class="btn btn-primary">Confirmar Reserva</button>
                                         </form>
@@ -284,8 +303,27 @@
                             </div>
                         </div>
                         @else
+                        <button type="button"
+                            class="btn-reservar"
+                            onclick="alert('Debes iniciar sesión para realizar una reserva.');">
+                            Reservar
+                        </button>
+                        @endauth
+                        @else
                         <button class="btn-disabled" disabled>X</button>
                         @endif
+
+                        @can('crear horarios')
+                        <div style="display: flex; gap: 5px; margin-top: 5px;">
+                            <a href="{{ route('horarios.edit', $horario) }}" class="btn btn-sm btn-warning">Editar</a>
+                            <form action="{{ route('horarios.destroy', $horario) }}" method="POST" style="display:inline"
+                                onsubmit="event.preventDefault(); confirmarEliminacion(this);">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-sm btn-danger">Eliminar</button>
+                            </form>
+                        </div>
+                        @endcan
                     </td>
                 </tr>
                 @endforeach
