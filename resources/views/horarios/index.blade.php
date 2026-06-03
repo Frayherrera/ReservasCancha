@@ -1,12 +1,8 @@
 @extends('layouts.app')
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Horarios Disponibles</title>
+@push('styles')
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
         .horarios-page {
             padding: 16px;
@@ -109,6 +105,20 @@
 
         .hora-card.ocupado::before {
             background: linear-gradient(90deg, #eb3349, #f45c43);
+        }
+
+        .hora-card.no-disponible::before {
+            background: linear-gradient(90deg, #eb3349, #f45c43);
+        }
+
+        .estado-badge.no-disponible {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .estado.no-disponible {
+            background: #f8d7da;
+            color: #721c24;
         }
 
         .hora-card:hover {
@@ -232,7 +242,7 @@
             color: #155724;
         }
 
-        .estado.no.disponible,
+        .estado.no-disponible,
         .estado.ocupado {
             background: #f8d7da;
             color: #721c24;
@@ -357,7 +367,7 @@
             }
         }
     </style>
-</head>
+@endpush
 
 @section('main')
 <div class="horarios-page">
@@ -479,7 +489,7 @@
 </div>
 
 <div class="d-flex justify-content-center mt-4">
-    {{ $horarios->links('pagination::bootstrap-4') }}
+    {{ $horarios->links('pagination::bootstrap-5') }}
 </div>
 @endif
 </div>
@@ -512,7 +522,7 @@
     </div>
 </div>
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+@push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
@@ -546,7 +556,7 @@
     function openReservaModal(id, fecha, hora) {
         document.getElementById('modalHorarioId').value = id;
         document.getElementById('modalText').innerHTML =
-            ¿Deseas reservar el horario del <strong>' + fecha + '</strong> a las <strong>' + hora + '</strong> hrs?;
+            `¿Deseas reservar el horario del <strong>${fecha}</strong> a las <strong>${hora}</strong> hrs?`;
         const modal = new bootstrap.Modal(document.getElementById('confirmModal'));
         modal.show();
     }
@@ -578,4 +588,5 @@
         });
     });
 </script>
+@endpush
 @endsection
