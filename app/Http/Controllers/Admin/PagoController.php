@@ -58,7 +58,7 @@ class PagoController extends Controller
             'monto' => 'required|numeric|min:0',
             'metodo_pago' => 'required|in:Efectivo,Transferencia,Tarjeta,Pago en línea,Otro',
             'referencia' => 'nullable|string|max:255',
-            'estado' => 'required|in:Pendiente, Pagado,Cancelado',
+            'estado' => 'required|in:Pendiente,Pagado,Cancelado',
         ]);
 
         Pago::create([
@@ -82,7 +82,7 @@ class PagoController extends Controller
     public function update(Request $request, Pago $pago)
     {
         $request->validate([
-            'estado' => 'required|in:Pendiente, Pagado,Cancelado,Reembolsado',
+            'estado' => 'required|in:Pendiente,Pagado,Cancelado,Reembolsado',
             'metodo_pago' => 'required|in:Efectivo,Transferencia,Tarjeta,Pago en línea,Otro',
             'referencia' => 'nullable|string|max:255',
         ]);
