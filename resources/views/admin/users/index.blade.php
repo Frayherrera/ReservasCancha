@@ -417,7 +417,7 @@
     <div class="stats-grid">
         <div class="stat-card">
             <i class='bx bx-group'></i>
-            <h3>{{ $totalUsuarios }}</h3>
+            <h3></h3>
             <p>Total usuarios</p>
         </div>
         <div class="stat-card">
@@ -525,5 +525,4 @@
     </div>
     @endif
 </div>
-@endpush
 @endsection

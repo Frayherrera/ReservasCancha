@@ -857,5 +857,4 @@
         });
     }
 </script>
-@endpush
 @endsection

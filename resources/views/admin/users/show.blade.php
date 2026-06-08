@@ -377,5 +377,4 @@
     </div>
     @endif
 </div>
-@endpush
 @endsection

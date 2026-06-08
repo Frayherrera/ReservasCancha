@@ -455,5 +455,4 @@ function confirmCancel(form) {
     });
 }
 </script>
-@endpush
 @endsection

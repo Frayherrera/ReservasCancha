@@ -275,5 +275,4 @@
         </form>
     </div>
 </div>
-@endpush
 @endsection
