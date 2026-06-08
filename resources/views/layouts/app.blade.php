@@ -8,14 +8,17 @@
     <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
     @stack('styles')
     <title>ReservaFutbol</title>
-    <meta name="theme-color" content="#4A90E2">
+    <meta name="theme-color" content="#0b0f1c">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="ReservasCancha">
 
     <link rel="manifest" href="/manifest.json">
 
-    <!-- Iconos específicos para iOS -->
     <link rel="apple-touch-icon" href="/pwa/icons/ios/180.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="/pwa/icons/ios/152.png">
+    <link rel="apple-touch-icon" sizes="167x167" href="/pwa/icons/ios/167.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="/pwa/icons/ios/120.png">
 
 </head>
 
