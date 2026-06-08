@@ -1,395 +1,445 @@
 @extends('layouts.app')
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestión de Usuarios</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
-    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+@push('styles')
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gestión de Usuarios</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+<link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+    :root {
+        --pitch-green: #00f593;
+        --pitch-green-glow: rgba(0, 245, 147, 0.25);
+        --amber: #ffb400;
+        --danger: #ff4466;
+        --stadium-bg: #0b0f1c;
+        --card-bg: rgba(12, 16, 30, 0.88);
+        --card-border: rgba(255, 255, 255, 0.05);
+        --text-primary: #f0f4ff;
+        --text-secondary: rgba(240, 244, 255, 0.55);
+        --text-muted: rgba(240, 244, 255, 0.3);
+        --radius: 16px;
+        --radius-sm: 10px;
+    }
 
-        body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
+    body {
+        font-family: 'Outfit', sans-serif;
+        background: var(--stadium-bg) !important;
+    }
 
-        /* Contenedor principal con efecto glassmorphism */
-        .users-container {
-            max-width: 1400px;
-            margin: 2rem auto;
-            padding: 2rem;
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            backdrop-filter: blur(10px);
-            animation: fadeInUp 0.6s ease-out;
-        }
+    .users-page {
+        padding: 28px 32px;
+        max-width: 1400px;
+        margin: 0 auto;
+        position: relative;
+    }
 
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
+    .users-page::before {
+        content: '';
+        position: fixed;
+        inset: 0;
+        background:
+            repeating-linear-gradient(0deg, transparent, transparent 60px, rgba(0, 245, 147, 0.01) 60px, rgba(0, 245, 147, 0.01) 61px),
+            repeating-linear-gradient(90deg, transparent, transparent 60px, rgba(0, 245, 147, 0.01) 60px, rgba(0, 245, 147, 0.01) 61px);
+        pointer-events: none;
+        z-index: 0;
+    }
 
-        /* Header */
-        .users-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 2rem;
-            padding-bottom: 1rem;
-            border-bottom: 3px solid linear-gradient(135deg, #667eea, #764ba2);
-        }
+    .page-header {
+        position: relative;
+        z-index: 1;
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        margin-bottom: 24px;
+        flex-wrap: wrap;
+        gap: 12px;
+    }
 
-        .users-title {
-            font-size: 2rem;
-            font-weight: 700;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
+    .page-header h1 {
+        font-family: 'Bebas Neue', sans-serif;
+        font-size: 2.6rem;
+        letter-spacing: 2px;
+        color: var(--text-primary);
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
 
-        .users-title i {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            font-size: 2rem;
-        }
+    .page-header h1 i {
+        color: var(--pitch-green);
+        font-size: 2rem;
+    }
 
-        /* Estadísticas */
+    .page-header .header-accent {
+        display: block;
+        width: 40px;
+        height: 3px;
+        background: var(--pitch-green);
+        border-radius: 4px;
+        box-shadow: 0 0 16px var(--pitch-green-glow);
+        margin-top: 6px;
+    }
+
+    .page-header .subtitle {
+        color: var(--text-secondary);
+        font-size: 0.85rem;
+        font-weight: 300;
+        margin: 6px 0 0;
+    }
+
+    .stats-grid {
+        position: relative;
+        z-index: 1;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 14px;
+        margin-bottom: 24px;
+    }
+
+    .stat-card {
+        background: var(--card-bg);
+        border: 1px solid var(--card-border);
+        border-radius: var(--radius);
+        padding: 20px;
+        text-align: center;
+        backdrop-filter: blur(12px);
+        transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .stat-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: var(--pitch-green);
+        opacity: 0.2;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-3px);
+    }
+
+    .stat-card i {
+        font-size: 28px;
+        color: var(--pitch-green);
+        margin-bottom: 6px;
+    }
+
+    .stat-card h3 {
+        font-family: 'Bebas Neue', sans-serif;
+        font-size: 1.8rem;
+        letter-spacing: 1px;
+        margin: 0;
+        line-height: 1;
+        color: var(--text-primary);
+    }
+
+    .stat-card p {
+        margin: 4px 0 0;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: var(--text-secondary);
+    }
+
+    .table-wrap {
+        position: relative;
+        z-index: 1;
+        background: var(--card-bg);
+        border: 1px solid var(--card-border);
+        border-radius: var(--radius);
+        overflow: hidden;
+        backdrop-filter: blur(12px);
+    }
+
+    .table-wrap table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .table-wrap th {
+        background: rgba(0, 245, 147, 0.04);
+        color: var(--text-secondary);
+        padding: 12px 16px;
+        text-align: left;
+        font-size: 0.72rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-weight: 600;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    }
+
+    .table-wrap td {
+        padding: 14px 16px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+        font-size: 0.88rem;
+        color: var(--text-primary);
+        vertical-align: middle;
+    }
+
+    .table-wrap tr:last-child td {
+        border-bottom: none;
+    }
+
+    .table-wrap tr:hover td {
+        background: rgba(255, 255, 255, 0.02);
+    }
+
+    .user-avatar {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background: rgba(0, 245, 147, 0.1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--pitch-green);
+        font-size: 16px;
+        flex-shrink: 0;
+        border: 1px solid rgba(0, 245, 147, 0.15);
+    }
+
+    .user-cell {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .user-cell strong {
+        color: var(--text-primary);
+    }
+
+    .rol-badge {
+        background: rgba(0, 245, 147, 0.08);
+        color: var(--pitch-green);
+        padding: 3px 12px;
+        border-radius: 12px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .status-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 4px 12px;
+        border-radius: 12px;
+        font-size: 0.72rem;
+        font-weight: 600;
+    }
+
+    .status-active {
+        background: rgba(0, 245, 147, 0.12);
+        color: var(--pitch-green);
+    }
+
+    .status-blocked {
+        background: rgba(255, 68, 102, 0.12);
+        color: var(--danger);
+    }
+
+    .btn-modern {
+        padding: 6px 14px;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        font-family: 'Outfit', sans-serif;
+        font-size: 0.78rem;
+        transition: transform 0.2s;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .btn-modern:hover {
+        transform: scale(1.03);
+    }
+
+    .btn-view {
+        background: rgba(0, 245, 147, 0.1);
+        color: var(--pitch-green);
+        border: 1px solid rgba(0, 245, 147, 0.1);
+    }
+
+    .btn-block-action {
+        background: rgba(255, 68, 102, 0.1);
+        color: var(--danger);
+        border: 1px solid rgba(255, 68, 102, 0.1);
+    }
+
+    .btn-unblock {
+        background: rgba(0, 245, 147, 0.1);
+        color: var(--pitch-green);
+        border: 1px solid rgba(0, 245, 147, 0.1);
+    }
+
+    .role-select {
+        padding: 6px 28px 6px 12px;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 8px;
+        font-size: 0.8rem;
+        font-family: 'Outfit', sans-serif;
+        background: rgba(255, 255, 255, 0.04);
+        color: var(--text-primary);
+        cursor: pointer;
+        transition: border-color 0.2s;
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%2300f593' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 8px center;
+    }
+
+    .role-select:focus {
+        outline: none;
+        border-color: var(--pitch-green);
+    }
+
+    .role-select option {
+        background: #12182f;
+        color: var(--text-primary);
+    }
+
+    .current-user-badge {
+        background: rgba(0, 245, 147, 0.1);
+        color: var(--pitch-green);
+        padding: 4px 10px;
+        border-radius: 12px;
+        font-size: 0.7rem;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .empty-state {
+        position: relative;
+        z-index: 1;
+        text-align: center;
+        padding: 60px 20px;
+        background: var(--card-bg);
+        border: 1px solid var(--card-border);
+        border-radius: var(--radius);
+        backdrop-filter: blur(12px);
+    }
+
+    .empty-state i {
+        font-size: 48px;
+        color: var(--text-muted);
+        margin-bottom: 12px;
+    }
+
+    .empty-state p {
+        color: var(--text-secondary);
+    }
+
+    .total-info {
+        position: relative;
+        z-index: 1;
+        background: rgba(0, 245, 147, 0.04);
+        border: 1px solid rgba(0, 245, 147, 0.08);
+        padding: 8px 16px;
+        border-radius: var(--radius-sm);
+        font-size: 0.85rem;
+        color: var(--text-secondary);
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .total-info i {
+        color: var(--pitch-green);
+    }
+
+    @media (max-width: 768px) {
+        .users-page {
+            padding: 16px;
+        }
+        .page-header h1 {
+            font-size: 1.8rem;
+        }
+        .page-header {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        .table-wrap {
+            overflow-x: auto;
+        }
         .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
+            grid-template-columns: repeat(2, 1fr);
         }
-
-        .stat-card {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            padding: 1.5rem;
-            border-radius: 15px;
-            color: white;
-            text-align: center;
-            transition: transform 0.3s ease;
-        }
-
-        .stat-card:hover {
-            transform: translateY(-5px);
-        }
-
-        .stat-card i {
-            font-size: 2rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .stat-card h3 {
-            font-size: 2rem;
-            margin: 0;
-        }
-
-        .stat-card p {
-            margin: 0;
-            opacity: 0.9;
-        }
-
-        /* Tabla moderna */
-        .users-table {
-            width: 100%;
-            border-collapse: separate;
-            border-spacing: 0 12px;
-        }
-
-        .users-table thead th {
-            background: #667eea;
-            color: white;
-            padding: 1rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            font-size: 0.85rem;
-            letter-spacing: 1px;
-        }
-
-        .users-table thead th:first-child {
-            border-radius: 15px 0 0 15px;
-        }
-
-        .users-table thead th:last-child {
-            border-radius: 0 15px 15px 0;
-        }
-
-        .users-table tbody tr {
-            background: white;
-            transition: all 0.3s ease;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-        }
-
-        .users-table tbody tr:hover {
-            transform: scale(1.01);
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
-        }
-
-        .users-table tbody td {
-            padding: 1rem;
-            vertical-align: middle;
-            border-bottom: 1px solid #f0f0f0;
-        }
-
-        /* Badges de estado */
-        .status-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            text-transform: uppercase;
-        }
-
-        .status-active {
-            background: linear-gradient(135deg, #11998e, #38ef7d);
-            color: white;
-        }
-
-        .status-blocked {
-            background: linear-gradient(135deg, #eb3349, #f45c43);
-            color: white;
-        }
-
-        /* Botones modernos */
-        .btn-modern {
-            padding: 6px 12px;
-            border: none;
-            border-radius: 8px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            cursor: pointer;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .btn-view {
-            background: linear-gradient(135deg, #4facfe, #00f2fe);
-            color: white;
-        }
-
-        .btn-view:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(79, 172, 254, 0.4);
-        }
-
-        .btn-block {
-            background: linear-gradient(135deg, #f093fb, #f5576c);
-            color: white;
-        }
-
-        .btn-block:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(245, 87, 108, 0.4);
-        }
-
-        .btn-unblock {
-            background: linear-gradient(135deg, #11998e, #38ef7d);
-            color: white;
-        }
-
-        .btn-unblock:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(17, 153, 142, 0.4);
-        }
-
-        /* Select personalizado */
-        .role-select {
-            padding: 6px 25px 6px 12px;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            font-size: 0.85rem;
-            background: white;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            appearance: none;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23667eea' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
-            background-repeat: no-repeat;
-            background-position: right 8px center;
-        }
-
-        .role-select:hover {
-            border-color: #667eea;
-        }
-
-        .role-select:focus {
-            outline: none;
-            border-color: #764ba2;
-            box-shadow: 0 0 0 3px rgba(118, 75, 162, 0.1);
-        }
-
-        /* Mensaje vacío */
-        .empty-state {
-            text-align: center;
-            padding: 4rem;
-            background: white;
-            border-radius: 15px;
-        }
-
-        .empty-state i {
-            font-size: 4rem;
-            color: #667eea;
-            margin-bottom: 1rem;
-        }
-
-        .empty-state p {
-            font-size: 1.2rem;
-            color: #666;
-        }
-
-        /* Paginación moderna */
-        .pagination-modern {
-            margin-top: 2rem;
-        }
-
-        .pagination-modern .pagination {
-            justify-content: center;
-        }
-
-        .pagination-modern .page-item .page-link {
-            border: none;
-            margin: 0 5px;
-            border-radius: 10px;
-            color: #667eea;
-            background: white;
-            transition: all 0.3s ease;
-        }
-
-        .pagination-modern .page-item.active .page-link {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-        }
-
-        .pagination-modern .page-item .page-link:hover {
-            transform: translateY(-2px);
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-        }
-
-        /* Texto "(Tú)" */
-        .current-user-badge {
-            background: #667eea;
-            color: white;
-            padding: 4px 8px;
-            border-radius: 12px;
-            font-size: 0.7rem;
-            font-weight: 600;
-            margin-left: 8px;
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .users-container {
-                margin: 1rem;
-                padding: 1rem;
-            }
-
-            .users-table {
-                font-size: 0.8rem;
-            }
-
-            .btn-modern {
-                padding: 4px 8px;
-                font-size: 0.7rem;
-            }
-
-            .role-select {
-                font-size: 0.7rem;
-                padding: 4px 20px 4px 8px;
-            }
-        }
-
-        /* Animación para filas */
-        .users-table tbody tr {
-            animation: slideIn 0.5s ease-out;
-        }
-
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateX(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
-    </style>
-</head>
+    }
+</style>
+@endpush
 
 @section('main')
-<body>
-    @if(session('success'))
-    <script>
-        Swal.fire({ 
-            icon: 'success', 
-            title: '¡Operación Exitosa!', 
-            text: "{{ session('success') }}", 
-            confirmButtonText: 'Aceptar',
-            background: 'white',
-            confirmButtonColor: '#667eea'
-        });
-    </script>
-    @endif
+@if(session('success'))
+<script>
+    Swal.fire({ icon: 'success', title: 'Operación Exitosa', text: "{{ session('success') }}", confirmButtonText: 'Aceptar', background: '#12182f', color: '#f0f4ff', iconColor: '#00f593', confirmButtonColor: '#00f593' });
+</script>
+@endif
+@if(session('error'))
+<script>
+    Swal.fire({ icon: 'error', title: 'Error', text: "{{ session('error') }}", confirmButtonText: 'Aceptar', background: '#12182f', color: '#f0f4ff', iconColor: '#ff4466', confirmButtonColor: '#00f593' });
+</script>
+@endif
 
-    @if(session('error'))
-    <script>
-        Swal.fire({ 
-            icon: 'error', 
-            title: 'Error', 
-            text: "{{ session('error') }}", 
-            confirmButtonText: 'Aceptar',
-            background: 'white',
-            confirmButtonColor: '#667eea'
-        });
-    </script>
-    @endif
-
-    <div class="users-container">
-        <div class="users-header">
-            <div class="users-title">
+<div class="users-page">
+    <div class="page-header">
+        <div>
+            <h1>
                 <i class='bx bx-group'></i>
-                <span>Gestión de Usuarios</span>
-            </div>
-            <div>
-                <span style="background: #667eea20; padding: 8px 16px; border-radius: 10px;">
-                    <i class='bx bx-calendar'></i> Total: {{ $users->total() }} usuarios
-                </span>
-            </div>
+                Gestión de Usuarios
+            </h1>
+            <p class="subtitle">Administra los usuarios del sistema</p>
+            <span class="header-accent"></span>
         </div>
+        <div class="total-info">
+            <i class='bx bx-calendar'></i> Total: {{ $users->total() }} usuarios
+        </div>
+    </div>
 
-        @if($users->isEmpty())
-        <div class="empty-state">
-            <i class='bx bx-user-x'></i>
-            <p>No hay usuarios registrados</p>
+    <div class="stats-grid">
+        <div class="stat-card">
+            <i class='bx bx-group'></i>
+            <h3>{{ $totalUsuarios }}</h3>
+            <p>Total usuarios</p>
         </div>
-        @else
-        <table class="users-table">
+        <div class="stat-card">
+            <i class='bx bx-shield'></i>
+            <h3>{{ $totalAdministradores ?? 0 }}</h3>
+            <p>Administradores</p>
+        </div>
+        <div class="stat-card">
+            <i class='bx bx-user'></i>
+            <h3>{{ $totalClientes ?? 0 }}</h3>
+            <p>Clientes</p>
+        </div>
+    </div>
+
+    @if($users->isEmpty())
+    <div class="empty-state">
+        <i class='bx bx-user-x'></i>
+        <p>No hay usuarios registrados</p>
+    </div>
+    @else
+    <div class="table-wrap">
+        <table>
             <thead>
                 <tr>
                     <th>ID</th>
@@ -402,25 +452,23 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach($users as $index => $user)
+                @foreach($users as $user)
                 <tr>
                     <td><strong>#{{ $user->id }}</strong></td>
                     <td>
-                        <div style="display: flex; align-items: center; gap: 10px;">
-                            <div style="width: 35px; height: 35px; background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white;">
-                                <i class='bx bx-user'></i>
-                            </div>
+                        <div class="user-cell">
+                            <div class="user-avatar"><i class='bx bx-user'></i></div>
                             <strong>{{ $user->name }}</strong>
                         </div>
                     </td>
                     <td>
-                        <div style="display: flex; align-items: center; gap: 5px;">
-                            <i class='bx bx-envelope' style="color: #667eea;"></i>
+                        <span style="display:flex; align-items:center; gap:4px;">
+                            <i class='bx bx-envelope' style="color:var(--pitch-green);"></i>
                             {{ $user->email }}
-                        </div>
+                        </span>
                     </td>
                     <td>
-                        <span style="background: #667eea20; padding: 4px 12px; border-radius: 12px; font-size: 0.8rem;">
+                        <span class="rol-badge">
                             <i class='bx {{ $user->hasRole('administrador') ? 'bx-shield' : 'bx-user' }}'></i>
                             {{ $user->getRoleNames()->implode(', ') ?: 'Sin rol' }}
                         </span>
@@ -432,13 +480,13 @@
                         </span>
                     </td>
                     <td>
-                        <span style="display: inline-flex; align-items: center; gap: 5px;">
-                            <i class='bx bx-calendar-check' style="color: #667eea;"></i>
+                        <span style="display:inline-flex; align-items:center; gap:4px;">
+                            <i class='bx bx-calendar-check' style="color:var(--pitch-green);"></i>
                             <strong>{{ $user->reservas->count() }}</strong>
                         </span>
                     </td>
                     <td>
-                        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                        <div style="display:flex; gap:6px; flex-wrap:wrap;">
                             <a href="{{ route('admin.users.show', $user) }}" class="btn-modern btn-view">
                                 <i class='bx bx-show-alt'></i> Ver
                             </a>
@@ -446,7 +494,7 @@
                             @if($user->id !== auth()->id())
                             <form action="{{ route('admin.users.block', $user) }}" method="POST" style="display:inline">
                                 @csrf
-                                <button type="submit" class="btn-modern {{ $user->blocked ? 'btn-unblock' : 'btn-block' }}">
+                                <button type="submit" class="btn-modern {{ $user->blocked ? 'btn-unblock' : 'btn-block-action' }}">
                                     <i class='bx {{ $user->blocked ? "bx-unlock-alt" : "bx-lock-alt" }}'></i>
                                     {{ $user->blocked ? 'Desbloquear' : 'Bloquear' }}
                                 </button>
@@ -455,8 +503,8 @@
                             <form action="{{ route('admin.users.changeRole', $user) }}" method="POST" style="display:inline">
                                 @csrf
                                 <select name="role" onchange="this.form.submit()" class="role-select">
-                                    <option value="cliente" {{ $user->hasRole('cliente') ? 'selected' : '' }}>👤 Cliente</option>
-                                    <option value="administrador" {{ $user->hasRole('administrador') ? 'selected' : '' }}>🛡️ Admin</option>
+                                    <option value="cliente" {{ $user->hasRole('cliente') ? 'selected' : '' }}>Cliente</option>
+                                    <option value="administrador" {{ $user->hasRole('administrador') ? 'selected' : '' }}>Admin</option>
                                 </select>
                             </form>
                             @else
@@ -470,11 +518,12 @@
                 @endforeach
             </tbody>
         </table>
-
-        <div class="pagination-modern">
-            {{ $users->links('pagination::bootstrap-4') }}
-        </div>
-        @endif
     </div>
-</body>
+
+    <div class="d-flex justify-content-center mt-4" style="position:relative; z-index:1;">
+        {{ $users->links('pagination::bootstrap-4') }}
+    </div>
+    @endif
+</div>
+@endpush
 @endsection

@@ -1,177 +1,332 @@
 @extends('layouts.app')
 
-<head>
+@push('styles')
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestión de Reservas</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11">
-    </script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --pitch-green: #00f593;
+            --pitch-green-glow: rgba(0, 245, 147, 0.25);
+            --amber: #ffb400;
+            --amber-glow: rgba(255, 180, 0, 0.2);
+            --danger: #ff4466;
+            --danger-glow: rgba(255, 68, 102, 0.2);
+            --stadium-bg: #0b0f1c;
+            --card-bg: rgba(12, 16, 30, 0.88);
+            --card-border: rgba(255, 255, 255, 0.05);
+            --text-primary: #f0f4ff;
+            --text-secondary: rgba(240, 244, 255, 0.55);
+            --text-muted: rgba(240, 244, 255, 0.3);
+            --radius: 16px;
+            --radius-sm: 10px;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: var(--stadium-bg) !important;
+        }
+
         .reservas-page {
-            padding: 16px;
+            padding: 28px 32px;
             max-width: 1400px;
             margin: 0 auto;
+            position: relative;
         }
 
-        .reservas-page h1 {
-            font-size: 1.6rem;
-            font-weight: 700;
-            color: #1a1a2e;
-            margin-bottom: 8px;
+        .reservas-page::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background:
+                repeating-linear-gradient(0deg, transparent, transparent 60px, rgba(0, 245, 147, 0.01) 60px, rgba(0, 245, 147, 0.01) 61px),
+                repeating-linear-gradient(90deg, transparent, transparent 60px, rgba(0, 245, 147, 0.01) 60px, rgba(0, 245, 147, 0.01) 61px);
+            pointer-events: none;
+            z-index: 0;
         }
 
-        .reservas-page .subtitle {
-            color: #6b7280;
+        .page-header {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
             margin-bottom: 24px;
+            flex-wrap: wrap;
+            gap: 12px;
         }
 
-        /* Stats */
+        .page-header h1 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 2.6rem;
+            letter-spacing: 2px;
+            color: var(--text-primary);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .page-header h1 i {
+            color: var(--pitch-green);
+            font-size: 2rem;
+        }
+
+        .page-header .header-accent {
+            display: block;
+            width: 40px;
+            height: 3px;
+            background: var(--pitch-green);
+            border-radius: 4px;
+            box-shadow: 0 0 16px var(--pitch-green-glow);
+            margin-top: 6px;
+        }
+
+        .page-header .subtitle {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            font-weight: 300;
+            margin: 6px 0 0;
+        }
+
+        /* === STATS === */
         .reservas-stats {
+            position: relative;
+            z-index: 1;
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
             gap: 14px;
             margin-bottom: 24px;
         }
 
         .reserva-stat {
-            background: white;
-            border-radius: 12px;
-            padding: 16px;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius);
+            padding: 18px;
             text-align: center;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+            backdrop-filter: blur(12px);
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+                        border-color 0.3s;
+            position: relative;
+            overflow: hidden;
         }
+
+        .reserva-stat::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            opacity: 0.2;
+        }
+
+        .reserva-stat:hover {
+            transform: translateY(-3px);
+        }
+
+        .reserva-stat:nth-child(1)::before { background: var(--pitch-green); }
+        .reserva-stat:nth-child(2)::before { background: var(--amber); }
+        .reserva-stat:nth-child(3)::before { background: var(--pitch-green); }
+        .reserva-stat:nth-child(4)::before { background: var(--danger); }
 
         .reserva-stat h3 {
-            font-size: 1.5rem;
-            font-weight: 700;
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.8rem;
+            letter-spacing: 1px;
             margin: 0;
+            line-height: 1;
         }
+
+        .reserva-stat:nth-child(1) h3 { color: var(--pitch-green); }
+        .reserva-stat:nth-child(2) h3 { color: var(--amber); }
+        .reserva-stat:nth-child(3) h3 { color: var(--pitch-green); }
+        .reserva-stat:nth-child(4) h3 { color: var(--danger); }
 
         .reserva-stat p {
-            margin: 2px 0 0;
-            font-size: 0.8rem;
-            color: #6b7280;
+            margin: 4px 0 0;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-secondary);
         }
 
-        /* Filter bar */
+        /* === FILTER BAR === */
         .filter-bar {
+            position: relative;
+            z-index: 1;
             display: flex;
             gap: 12px;
             align-items: center;
             margin-bottom: 24px;
             flex-wrap: wrap;
-            background: white;
-            padding: 16px;
-            border-radius: 14px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            padding: 16px 20px;
+            border-radius: var(--radius);
+            backdrop-filter: blur(12px);
         }
 
         .filter-bar input,
         .filter-bar select {
             padding: 10px 14px;
-            border: 2px solid #e5e7eb;
-            border-radius: 10px;
-            font-size: 0.9rem;
-            background: white;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: var(--radius-sm);
+            font-size: 0.85rem;
+            font-family: 'Outfit', sans-serif;
+            background: rgba(255, 255, 255, 0.04);
+            color: var(--text-primary);
+            transition: border-color 0.25s, box-shadow 0.25s;
+            outline: none;
         }
 
         .filter-bar input:focus,
         .filter-bar select:focus {
-            outline: none;
-            border-color: #4facfe;
+            border-color: var(--pitch-green);
+            box-shadow: 0 0 0 3px rgba(0, 245, 147, 0.06);
+        }
+
+        .filter-bar input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .filter-bar select option {
+            background: #12182f;
+            color: var(--text-primary);
         }
 
         .filter-bar .search-input {
             flex: 1;
-            min-width: 180px;
+            min-width: 160px;
         }
 
         .filter-bar .btn-filter {
-            background: #003770;
-            color: white;
+            background: var(--pitch-green);
+            color: #0b0f1c;
             border: none;
-            padding: 10px 20px;
-            border-radius: 10px;
-            font-weight: 600;
+            padding: 10px 22px;
+            border-radius: var(--radius-sm);
+            font-weight: 700;
+            font-size: 0.8rem;
+            font-family: 'Outfit', sans-serif;
             cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
-        /* Kanban columns */
+        .filter-bar .btn-filter:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 16px var(--pitch-green-glow);
+        }
+
+        .filter-bar .clear-link {
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .filter-bar .clear-link:hover {
+            color: var(--pitch-green);
+        }
+
+        /* === KANBAN === */
         .kanban {
+            position: relative;
+            z-index: 1;
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 16px;
         }
 
         .kanban-column {
-            background: #f8f9fb;
-            border-radius: 14px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius);
             padding: 16px;
             min-height: 300px;
+            backdrop-filter: blur(8px);
+            transition: border-color 0.3s;
+        }
+
+        .kanban-column.pendiente {
+            border-color: rgba(255, 180, 0, 0.08);
+        }
+        .kanban-column.aprobada {
+            border-color: rgba(0, 245, 147, 0.08);
+        }
+        .kanban-column.rechazada {
+            border-color: rgba(255, 68, 102, 0.08);
         }
 
         .kanban-column .column-header {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 12px;
-            padding-bottom: 10px;
-            border-bottom: 3px solid;
+            margin-bottom: 14px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid;
+        }
+
+        .kanban-column.pendiente .column-header {
+            border-color: rgba(255, 180, 0, 0.2);
+        }
+        .kanban-column.aprobada .column-header {
+            border-color: rgba(0, 245, 147, 0.2);
+        }
+        .kanban-column.rechazada .column-header {
+            border-color: rgba(255, 68, 102, 0.2);
         }
 
         .kanban-column .column-header h3 {
-            font-size: 0.95rem;
-            font-weight: 600;
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.1rem;
+            letter-spacing: 1px;
             margin: 0;
             display: flex;
             align-items: center;
             gap: 8px;
         }
 
+        .kanban-column.pendiente .column-header h3 { color: var(--amber); }
+        .kanban-column.aprobada .column-header h3 { color: var(--pitch-green); }
+        .kanban-column.rechazada .column-header h3 { color: var(--danger); }
+
         .kanban-column .column-header .count {
-            background: #e5e7eb;
-            padding: 2px 10px;
+            background: rgba(255, 255, 255, 0.04);
+            padding: 2px 12px;
             border-radius: 12px;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             font-weight: 600;
+            color: var(--text-secondary);
         }
 
-        .kanban-column.pendiente .column-header {
-            border-color: #fbbf24;
-        }
-        .kanban-column.pendiente .column-header h3 {
-            color: #92400e;
-        }
-
-        .kanban-column.aprobada .column-header {
-            border-color: #34d399;
-        }
-        .kanban-column.aprobada .column-header h3 {
-            color: #065f46;
-        }
-
-        .kanban-column.rechazada .column-header {
-            border-color: #f87171;
-        }
-        .kanban-column.rechazada .column-header h3 {
-            color: #991b1b;
-        }
-
+        /* === RESERVA CARD === */
         .reserva-card {
-            background: white;
-            border-radius: 12px;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius-sm);
             padding: 16px;
             margin-bottom: 10px;
-            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
-            transition: transform 0.2s, box-shadow 0.2s;
+            transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1),
+                        border-color 0.25s,
+                        box-shadow 0.25s;
+            position: relative;
         }
 
         .reserva-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transform: translateY(-3px);
+            border-color: rgba(255, 255, 255, 0.08);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
         }
 
         .reserva-card .card-header-info {
@@ -184,34 +339,42 @@
         .reserva-card .cliente {
             font-weight: 600;
             font-size: 0.9rem;
-            color: #1a1a2e;
+            color: var(--text-primary);
         }
 
         .reserva-card .cliente small {
             display: block;
-            font-weight: 400;
-            font-size: 0.75rem;
-            color: #6b7280;
+            font-weight: 300;
+            font-size: 0.72rem;
+            color: var(--text-secondary);
         }
 
         .reserva-card .reserva-id {
-            font-size: 0.75rem;
-            color: #9ca3af;
+            font-size: 0.7rem;
+            color: var(--text-muted);
             font-weight: 600;
+            background: rgba(255, 255, 255, 0.03);
+            padding: 2px 10px;
+            border-radius: 6px;
         }
 
         .reserva-card .detalle {
-            font-size: 0.85rem;
-            color: #4b5563;
+            font-size: 0.82rem;
+            color: var(--text-secondary);
             margin-bottom: 8px;
             display: flex;
-            gap: 12px;
+            gap: 14px;
             flex-wrap: wrap;
         }
 
         .reserva-card .detalle i {
-            color: #4facfe;
+            color: var(--pitch-green);
             width: 16px;
+        }
+
+        .reserva-card .fecha-creacion {
+            font-size: 0.72rem;
+            color: var(--text-muted);
         }
 
         .reserva-card .acciones {
@@ -220,81 +383,220 @@
             flex-wrap: wrap;
             margin-top: 10px;
             padding-top: 10px;
-            border-top: 1px solid #f0f0f0;
+            border-top: 1px solid rgba(255, 255, 255, 0.04);
         }
 
         .reserva-card .acciones .btn-action {
             padding: 6px 14px;
             border-radius: 8px;
-            font-size: 0.78rem;
+            font-size: 0.75rem;
             font-weight: 600;
+            font-family: 'Outfit', sans-serif;
             border: none;
             cursor: pointer;
-            transition: transform 0.2s;
+            transition: transform 0.2s, box-shadow 0.2s;
             display: inline-flex;
             align-items: center;
             gap: 4px;
         }
 
         .reserva-card .acciones .btn-action:hover {
-            transform: scale(1.03);
+            transform: scale(1.04);
         }
 
         .btn-aprobar {
-            background: #d4edda;
-            color: #155724;
+            background: rgba(0, 245, 147, 0.12);
+            color: var(--pitch-green);
+            border: 1px solid rgba(0, 245, 147, 0.12) !important;
+        }
+        .btn-aprobar:hover {
+            box-shadow: 0 0 12px var(--pitch-green-glow);
         }
         .btn-rechazar {
-            background: #f8d7da;
-            color: #721c24;
+            background: rgba(255, 68, 102, 0.12);
+            color: var(--danger);
+            border: 1px solid rgba(255, 68, 102, 0.12) !important;
+        }
+        .btn-rechazar:hover {
+            box-shadow: 0 0 12px var(--danger-glow);
         }
         .btn-reagendar {
-            background: #fff3cd;
-            color: #856404;
+            background: rgba(255, 180, 0, 0.12);
+            color: var(--amber);
+            border: 1px solid rgba(255, 180, 0, 0.12) !important;
+        }
+        .btn-reagendar:hover {
+            box-shadow: 0 0 12px var(--amber-glow);
         }
         .btn-eliminar {
-            background: #f3f4f6;
-            color: #6b7280;
+            background: rgba(255, 255, 255, 0.04);
+            color: var(--text-muted);
+            border: 1px solid rgba(255, 255, 255, 0.04) !important;
+        }
+        .btn-eliminar:hover {
+            color: var(--danger);
+            background: rgba(255, 68, 102, 0.1);
         }
 
-        /* Desktop table fallback */
-        .table-wrap {
-            display: none;
-        }
-
-        /* Empty state */
         .empty-kanban {
             text-align: center;
             padding: 40px 20px;
-            color: #9ca3af;
+            color: var(--text-muted);
         }
 
         .empty-kanban i {
-            font-size: 36px;
+            font-size: 32px;
             margin-bottom: 8px;
         }
 
-        /* Modal reagendar */
-        .modal-reagendar .horario-option {
+        .empty-kanban p {
+            margin: 0;
+            font-size: 0.85rem;
+        }
+
+        /* === EMPTY STATE === */
+        .empty-state {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            padding: 60px 20px;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius);
+            backdrop-filter: blur(12px);
+        }
+
+        .empty-state i {
+            font-size: 48px;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+        }
+
+        .empty-state p {
+            color: var(--text-secondary);
+        }
+
+        /* === REAGENDAR MODAL === */
+        .modal-content {
+            background: rgba(12, 16, 30, 0.96) !important;
+            border: 1px solid var(--card-border) !important;
+            border-radius: var(--radius) !important;
+            box-shadow: 0 32px 80px rgba(0, 0, 0, 0.7) !important;
+            backdrop-filter: blur(24px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .modal-content::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--pitch-green), transparent);
+            opacity: 0.3;
+        }
+
+        .modal-header {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04) !important;
+            padding: 18px 24px 0 !important;
+        }
+
+        .modal-header .modal-title {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.4rem;
+            letter-spacing: 1px;
+            color: var(--text-primary);
+        }
+
+        .modal-header .btn-close {
+            filter: invert(1) brightness(200%);
+            opacity: 0.4;
+            transition: opacity 0.2s, transform 0.2s;
+        }
+
+        .modal-header .btn-close:hover {
+            opacity: 1;
+            transform: rotate(90deg);
+        }
+
+        .modal-body {
+            padding: 20px 24px !important;
+        }
+
+        .modal-body p {
+            color: var(--text-secondary) !important;
+        }
+
+        .horario-option {
             display: block;
             width: 100%;
-            padding: 10px 16px;
-            border: 2px solid #e5e7eb;
-            border-radius: 10px;
+            padding: 12px 16px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: var(--radius-sm);
             margin-bottom: 8px;
-            background: white;
+            background: rgba(255, 255, 255, 0.03);
             cursor: pointer;
             text-align: left;
-            transition: border-color 0.2s;
-            font-size: 0.9rem;
+            transition: border-color 0.2s, background 0.2s;
+            font-size: 0.85rem;
+            font-family: 'Outfit', sans-serif;
+            color: var(--text-secondary);
         }
 
-        .modal-reagendar .horario-option:hover {
-            border-color: #4facfe;
+        .horario-option:hover {
+            border-color: var(--pitch-green);
+            background: rgba(0, 245, 147, 0.04);
         }
 
-        /* Paginación */
+        .horario-option i {
+            color: var(--pitch-green);
+        }
+
+        .modal-footer {
+            border-top: 1px solid rgba(255, 255, 255, 0.04) !important;
+            padding: 16px 24px 20px !important;
+            gap: 10px;
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.06) !important;
+            color: var(--text-secondary) !important;
+            border: 1px solid rgba(255, 255, 255, 0.08) !important;
+            padding: 10px 22px !important;
+            border-radius: var(--radius-sm) !important;
+            font-weight: 600 !important;
+            font-family: 'Outfit', sans-serif !important;
+            transition: background 0.2s !important;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.1) !important;
+        }
+
+        .btn-primary {
+            background: var(--pitch-green) !important;
+            color: #0b0f1c !important;
+            border: none !important;
+            padding: 10px 24px !important;
+            border-radius: var(--radius-sm) !important;
+            font-weight: 700 !important;
+            font-family: 'Outfit', sans-serif !important;
+            text-transform: uppercase !important;
+            letter-spacing: 0.5px !important;
+            transition: transform 0.2s, box-shadow 0.2s !important;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 16px var(--pitch-green-glow);
+        }
+
+        /* === PAGINATION === */
         .pagination-wrap {
+            position: relative;
+            z-index: 1;
             margin-top: 24px;
             display: flex;
             justify-content: center;
@@ -304,54 +606,66 @@
             .kanban {
                 grid-template-columns: 1fr;
             }
+
+            .reservas-page {
+                padding: 16px;
+            }
+
+            .page-header h1 {
+                font-size: 1.8rem;
+            }
+
             .filter-bar {
                 flex-direction: column;
                 align-items: stretch;
             }
+
             .filter-bar .search-input {
                 min-width: unset;
             }
         }
-
-        @media (min-width: 901px) {
-            .table-wrap-mobile {
-                display: none;
-            }
-        }
     </style>
-</head>
+@endpush
 
 @section('main')
 <div class="reservas-page">
-    <h1><i class='bx bx-calendar-check'></i> Gestión de Reservas</h1>
-    <p class="subtitle">Administra las reservas de los clientes</p>
+    <div class="page-header">
+        <div>
+            <h1>
+                <i class='bx bx-calendar-check'></i>
+                Reservas
+            </h1>
+            <p class="subtitle">Administra las reservas de los clientes</p>
+            <span class="header-accent"></span>
+        </div>
+    </div>
 
     @if(session('success'))
     <script>
-        Swal.fire({ icon: 'success', title: 'Operación Exitosa', text: "{{ session('success') }}", confirmButtonText: 'Aceptar' });
+        Swal.fire({ icon: 'success', title: 'Operación Exitosa', text: "{{ session('success') }}", confirmButtonText: 'Aceptar', background: '#12182f', color: '#f0f4ff', iconColor: '#00f593', confirmButtonColor: '#00f593' });
     </script>
     @endif
     @if(session('error'))
     <script>
-        Swal.fire({ icon: 'error', title: 'Error', text: "{{ session('error') }}", confirmButtonText: 'Aceptar' });
+        Swal.fire({ icon: 'error', title: 'Error', text: "{{ session('error') }}", confirmButtonText: 'Aceptar', background: '#12182f', color: '#f0f4ff', iconColor: '#ff4466', confirmButtonColor: '#00f593' });
     </script>
     @endif
 
     <div class="reservas-stats">
         <div class="reserva-stat">
-            <h3 style="color: #003770;">{{ $resumen['total'] }}</h3>
+            <h3>{{ $resumen['total'] }}</h3>
             <p>Total</p>
         </div>
         <div class="reserva-stat">
-            <h3 style="color: #92400e;">{{ $resumen['pendientes'] }}</h3>
+            <h3>{{ $resumen['pendientes'] }}</h3>
             <p>Pendientes</p>
         </div>
         <div class="reserva-stat">
-            <h3 style="color: #065f46;">{{ $resumen['aprobadas'] }}</h3>
+            <h3>{{ $resumen['aprobadas'] }}</h3>
             <p>Aprobadas</p>
         </div>
         <div class="reserva-stat">
-            <h3 style="color: #991b1b;">{{ $resumen['rechazadas'] }}</h3>
+            <h3>{{ $resumen['rechazadas'] }}</h3>
             <p>Rechazadas</p>
         </div>
     </div>
@@ -367,17 +681,16 @@
         <input type="date" name="fecha" value="{{ request('fecha') }}">
         <button type="submit" class="btn-filter">Filtrar</button>
         @if(request()->anyFilled(['search', 'estado', 'fecha']))
-        <a href="{{ route('reservas.index') }}" style="color: #6b7280; font-size: 0.85rem;">Limpiar filtros</a>
+        <a href="{{ route('reservas.index') }}" class="clear-link">Limpiar filtros</a>
         @endif
     </form>
 
     @if($reservas->isEmpty())
-    <div style="text-align:center; padding:60px 20px; background:white; border-radius:14px; color:#6b7280;">
-        <i class='bx bx-calendar-x' style="font-size:48px; color:#d1d5db;"></i>
+    <div class="empty-state">
+        <i class='bx bx-calendar-x'></i>
         <p>No se encontraron reservas</p>
     </div>
     @else
-    <!-- Kanban view -->
     <div class="kanban">
         @foreach(['Pendiente', 'Aprobada', 'Rechazada'] as $estado)
         <div class="kanban-column {{ strtolower($estado) }}">
@@ -407,7 +720,7 @@
                     <span><i class='bx bx-time'></i> {{ \Carbon\Carbon::parse($reserva->horario->hora)->format('H:i') }}</span>
                     <span><i class='bx bx-dollar'></i> ${{ number_format($reserva->precio->valor, 0, ',', '.') }}</span>
                 </div>
-                <div style="font-size:0.78rem; color:#9ca3af;">
+                <div class="fecha-creacion">
                     Creada: {{ $reserva->created_at->format('d/m/Y H:i') }}
                 </div>
                 <div class="acciones">
@@ -455,18 +768,17 @@
     @endif
 </div>
 
-<!-- Modal Reagendar -->
 <div class="modal fade modal-reagendar" id="reagendarModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Reagendar reserva</h5>
+                <h5 class="modal-title"><i class='bx bx-calendar-edit' style="color: var(--pitch-green); margin-right: 6px;"></i> Reagendar reserva</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
-                <p style="color:#6b7280; margin-bottom:16px;">Selecciona un nuevo horario disponible:</p>
+                <p>Selecciona un nuevo horario disponible:</p>
                 <div id="horariosList" style="max-height: 300px; overflow-y: auto;">
-                    <p style="color:#9ca3af;">Cargando horarios...</p>
+                    <p style="color: var(--text-muted);">Cargando horarios...</p>
                 </div>
             </div>
             <div class="modal-footer">
@@ -474,40 +786,41 @@
                     @csrf
                     <input type="hidden" name="nuevo_horario_id" id="nuevoHorarioId">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="submit" class="btn btn-primary" style="background:linear-gradient(135deg,#4facfe,#00f2fe); border:none; padding:10px 24px; border-radius:10px; font-weight:600;">Confirmar</button>
+                    <button type="submit" class="btn btn-primary">Confirmar</button>
                 </form>
             </div>
         </div>
     </div>
 </div>
 
+@push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
     let reagendarModalInstance = null;
 
     function openReagendarModal(reservaId) {
         document.getElementById('reagendarForm').action = '/admin/reservas/' + reservaId + '/reagendar';
-        document.getElementById('horariosList').innerHTML = '<p style="color:#9ca3af;">Cargando horarios...</p>';
+        document.getElementById('horariosList').innerHTML = '<p style="color: var(--text-muted);">Cargando horarios...</p>';
 
         fetch('/horarios-disponibles')
             .then(r => r.json())
             .then(horarios => {
                 if (horarios.length === 0) {
-                    document.getElementById('horariosList').innerHTML = '<p style="color:#9ca3af;">No hay horarios disponibles</p>';
+                    document.getElementById('horariosList').innerHTML = '<p style="color: var(--text-muted);">No hay horarios disponibles</p>';
                     return;
                 }
                 let html = '';
                 horarios.forEach(h => {
                     const fecha = new Date(h.fecha).toLocaleDateString('es-CL');
                     const hora = h.hora.substring(0, 5);
-                    html += `<button type="button" class="horario-option" onclick="selectHorario(${h.id}, '${fecha}', '${hora}')">
+                    html += `<button type="button" class="horario-option" onclick="selectHorario(${h.id})">
                                 <i class='bx bx-calendar'></i> ${fecha} - <i class='bx bx-time'></i> ${hora} hrs
                              </button>`;
                 });
                 document.getElementById('horariosList').innerHTML = html;
             })
             .catch(() => {
-                document.getElementById('horariosList').innerHTML = '<p style="color:#ef4444;">Error al cargar horarios</p>';
+                document.getElementById('horariosList').innerHTML = '<p style="color: var(--danger);">Error al cargar horarios</p>';
             });
 
         if (!reagendarModalInstance) {
@@ -516,11 +829,14 @@
         reagendarModalInstance.show();
     }
 
-    function selectHorario(id, fecha, hora) {
+    function selectHorario(id) {
         document.getElementById('nuevoHorarioId').value = id;
-        document.querySelectorAll('.horario-option').forEach(el => el.style.borderColor = '#e5e7eb');
-        event.target.style.borderColor = '#4facfe';
-        event.target.style.background = '#f0f7ff';
+        document.querySelectorAll('.horario-option').forEach(el => {
+            el.style.borderColor = 'rgba(255,255,255,0.08)';
+            el.style.background = 'rgba(255,255,255,0.03)';
+        });
+        event.target.style.borderColor = '#00f593';
+        event.target.style.background = 'rgba(0,245,147,0.06)';
     }
 
     function confirmDelete(form) {
@@ -529,13 +845,17 @@
             text: 'Esta acción no se puede deshacer.',
             icon: 'warning',
             showCancelButton: true,
-            confirmButtonColor: '#d33',
-            cancelButtonColor: '#6c757d',
+            confirmButtonColor: '#ff4466',
+            cancelButtonColor: 'rgba(255,255,255,0.08)',
             confirmButtonText: 'Sí, eliminar',
-            cancelButtonText: 'Cancelar'
+            cancelButtonText: 'Cancelar',
+            background: '#12182f',
+            color: '#f0f4ff',
+            iconColor: '#ffb400'
         }).then((result) => {
             if (result.isConfirmed) form.submit();
         });
     }
 </script>
+@endpush
 @endsection

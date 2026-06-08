@@ -1,115 +1,220 @@
 @extends('layouts.app')
 
-<head>
+@push('styles')
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard Administrativo</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js">
-    </script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --pitch-green: #00f593;
+            --pitch-green-dim: rgba(0, 245, 147, 0.08);
+            --pitch-green-glow: rgba(0, 245, 147, 0.25);
+            --amber: #ffb400;
+            --stadium-bg: #0b0f1c;
+            --card-bg: rgba(12, 16, 30, 0.88);
+            --card-border: rgba(255, 255, 255, 0.05);
+            --text-primary: #f0f4ff;
+            --text-secondary: rgba(240, 244, 255, 0.55);
+            --text-muted: rgba(240, 244, 255, 0.3);
+            --danger: #ff4466;
+            --radius: 16px;
+            --radius-sm: 10px;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: var(--stadium-bg) !important;
+        }
+
         .dashboard {
-            padding: 24px;
+            padding: 28px 32px;
             max-width: 1400px;
             margin: 0 auto;
+            position: relative;
         }
 
-        .dashboard h1 {
-            font-size: 1.75rem;
-            font-weight: 700;
-            color: #1a1a2e;
-            margin-bottom: 24px;
+        .dashboard::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background:
+                repeating-linear-gradient(0deg, transparent, transparent 60px, rgba(0, 245, 147, 0.01) 60px, rgba(0, 245, 147, 0.01) 61px),
+                repeating-linear-gradient(90deg, transparent, transparent 60px, rgba(0, 245, 147, 0.01) 60px, rgba(0, 245, 147, 0.01) 61px);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .dashboard-header {
+            position: relative;
+            z-index: 1;
             display: flex;
             align-items: center;
-            gap: 10px;
+            justify-content: space-between;
+            margin-bottom: 28px;
+            flex-wrap: wrap;
+            gap: 12px;
         }
 
+        .dashboard-header h1 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 2.6rem;
+            letter-spacing: 2px;
+            color: var(--text-primary);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .dashboard-header h1 i {
+            color: var(--pitch-green);
+            font-size: 2rem;
+        }
+
+        .dashboard-header .header-accent {
+            display: block;
+            width: 40px;
+            height: 3px;
+            background: var(--pitch-green);
+            border-radius: 4px;
+            box-shadow: 0 0 16px var(--pitch-green-glow);
+            margin-top: 6px;
+        }
+
+        .dashboard-date {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            padding: 8px 16px;
+            border-radius: 100px;
+        }
+
+        /* === STATS GRID === */
         .stats-grid {
+            position: relative;
+            z-index: 1;
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 20px;
-            margin-bottom: 32px;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 28px;
         }
 
         .stat-card {
-            background: white;
-            border-radius: 16px;
-            padding: 24px;
-            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius);
+            padding: 20px 24px;
             display: flex;
             align-items: center;
             gap: 16px;
-            transition: transform 0.2s, box-shadow 0.2s;
+            backdrop-filter: blur(12px);
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+                        border-color 0.3s,
+                        box-shadow 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            opacity: 0.15;
         }
 
         .stat-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+            transform: translateY(-4px);
+            border-color: rgba(0, 245, 147, 0.12);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
         }
 
         .stat-icon {
-            width: 56px;
-            height: 56px;
+            width: 48px;
+            height: 48px;
             border-radius: 14px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 26px;
-            color: white;
+            font-size: 22px;
             flex-shrink: 0;
+            position: relative;
         }
 
         .stat-icon.blue {
-            background: linear-gradient(135deg, #4facfe, #00f2fe);
+            background: rgba(79, 172, 254, 0.12);
+            color: #4facfe;
         }
         .stat-icon.green {
-            background: linear-gradient(135deg, #11998e, #38ef7d);
+            background: rgba(0, 245, 147, 0.12);
+            color: var(--pitch-green);
         }
         .stat-icon.orange {
-            background: linear-gradient(135deg, #fa709a, #fee140);
+            background: rgba(255, 180, 0, 0.12);
+            color: var(--amber);
         }
         .stat-icon.purple {
-            background: linear-gradient(135deg, #a18cd1, #fbc2eb);
+            background: rgba(161, 140, 209, 0.12);
+            color: #a18cd1;
         }
         .stat-icon.red {
-            background: linear-gradient(135deg, #eb3349, #f45c43);
+            background: rgba(255, 68, 102, 0.12);
+            color: var(--danger);
         }
         .stat-icon.teal {
-            background: linear-gradient(135deg, #2af598, #009efd);
+            background: rgba(0, 207, 180, 0.12);
+            color: #00cfb4;
         }
 
         .stat-info h3 {
-            font-size: 1.6rem;
-            font-weight: 700;
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.8rem;
+            letter-spacing: 1px;
             margin: 0;
-            color: #1a1a2e;
+            color: var(--text-primary);
+            line-height: 1;
         }
 
         .stat-info p {
-            margin: 2px 0 0;
-            color: #6b7280;
-            font-size: 0.85rem;
+            margin: 4px 0 0;
+            color: var(--text-secondary);
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
+        /* === ROW SPLIT === */
         .row-split {
+            position: relative;
+            z-index: 1;
             display: grid;
             grid-template-columns: 2fr 1fr;
-            gap: 24px;
-            margin-bottom: 32px;
+            gap: 20px;
+            margin-bottom: 28px;
         }
 
         .card {
-            background: white;
-            border-radius: 16px;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius);
             padding: 24px;
-            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+            backdrop-filter: blur(12px);
         }
 
         .card h2 {
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: #1a1a2e;
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.2rem;
+            letter-spacing: 1px;
+            color: var(--text-primary);
             margin: 0 0 16px;
             display: flex;
             align-items: center;
@@ -117,52 +222,15 @@
         }
 
         .card h2 i {
-            color: #4facfe;
+            color: var(--pitch-green);
         }
 
-        .table-dashboard {
-            width: 100%;
-            border-collapse: collapse;
+        .chart-container {
+            position: relative;
+            height: 200px;
         }
 
-        .table-dashboard th {
-            text-align: left;
-            padding: 10px 12px;
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            color: #6b7280;
-            border-bottom: 2px solid #f0f0f0;
-        }
-
-        .table-dashboard td {
-            padding: 10px 12px;
-            border-bottom: 1px solid #f5f5f5;
-            font-size: 0.9rem;
-        }
-
-        .badge-estado {
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: 600;
-        }
-
-        .badge-aprobada {
-            background: #d4edda;
-            color: #155724;
-        }
-
-        .badge-pendiente {
-            background: #fff3cd;
-            color: #856404;
-        }
-
-        .badge-rechazada {
-            background: #f8d7da;
-            color: #721c24;
-        }
-
+        /* === RANK LIST === */
         .rank-list {
             list-style: none;
             padding: 0;
@@ -174,7 +242,7 @@
             align-items: center;
             gap: 12px;
             padding: 10px 0;
-            border-bottom: 1px solid #f5f5f5;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
         }
 
         .rank-list li:last-child {
@@ -185,33 +253,46 @@
             width: 28px;
             height: 28px;
             border-radius: 50%;
-            background: #f0f0f0;
+            background: rgba(255, 255, 255, 0.04);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             font-weight: 700;
-            color: #6b7280;
+            color: var(--text-muted);
             flex-shrink: 0;
         }
 
         .rank-list li:first-child .rank-number {
-            background: linear-gradient(135deg, #f093fb, #f5576c);
-            color: white;
+            background: var(--pitch-green);
+            color: #0b0f1c;
+        }
+        .rank-list li:nth-child(2) .rank-number {
+            background: rgba(0, 245, 147, 0.5);
+            color: #0b0f1c;
+        }
+        .rank-list li:nth-child(3) .rank-number {
+            background: rgba(0, 245, 147, 0.25);
+            color: var(--text-primary);
         }
 
         .rank-name {
             flex: 1;
             font-weight: 500;
+            color: var(--text-primary);
+            font-size: 0.9rem;
         }
 
         .rank-count {
-            font-size: 0.85rem;
-            color: #6b7280;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
         }
 
+        /* === HORARIO BARS === */
         .card-horarios {
-            grid-column: 1 / -1;
+            position: relative;
+            z-index: 1;
+            margin-bottom: 28px;
         }
 
         .horario-bars {
@@ -229,65 +310,158 @@
         .horario-bar-item .hora-label {
             width: 60px;
             font-weight: 600;
-            font-size: 0.9rem;
-            color: #374151;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
             flex-shrink: 0;
         }
 
         .horario-bar-track {
             flex: 1;
-            height: 28px;
-            background: #f0f0f0;
-            border-radius: 14px;
+            height: 26px;
+            background: rgba(255, 255, 255, 0.04);
+            border-radius: 13px;
             overflow: hidden;
         }
 
         .horario-bar-fill {
             height: 100%;
-            border-radius: 14px;
-            background: linear-gradient(90deg, #4facfe, #00f2fe);
+            border-radius: 13px;
+            background: linear-gradient(90deg, var(--pitch-green), #00c97a);
             display: flex;
             align-items: center;
             padding-left: 12px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            color: white;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #0b0f1c;
             min-width: fit-content;
-            transition: width 0.6s ease;
+            transition: width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15);
         }
 
-        .chart-container {
-            position: relative;
-            height: 200px;
+        /* === TABLE === */
+        .table-dashboard {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .table-dashboard th {
+            text-align: left;
+            padding: 12px 14px;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: var(--text-muted);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            font-weight: 600;
+        }
+
+        .table-dashboard td {
+            padding: 12px 14px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .table-dashboard tr:last-child td {
+            border-bottom: none;
+        }
+
+        .table-dashboard tr:hover td {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .badge-estado {
+            padding: 3px 12px;
+            border-radius: 100px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: inline-block;
+        }
+
+        .badge-aprobada {
+            background: rgba(0, 245, 147, 0.1);
+            color: var(--pitch-green);
+            border: 1px solid rgba(0, 245, 147, 0.12);
+        }
+
+        .badge-pendiente {
+            background: rgba(255, 180, 0, 0.1);
+            color: var(--amber);
+            border: 1px solid rgba(255, 180, 0, 0.12);
+        }
+
+        .badge-rechazada {
+            background: rgba(255, 68, 102, 0.1);
+            color: var(--danger);
+            border: 1px solid rgba(255, 68, 102, 0.12);
+        }
+
+        .card p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
         }
 
         @media (max-width: 768px) {
-            .row-split {
-                grid-template-columns: 1fr;
-            }
             .dashboard {
                 padding: 16px;
             }
+
+            .dashboard-header h1 {
+                font-size: 1.8rem;
+            }
+
+            .row-split {
+                grid-template-columns: 1fr;
+            }
+
             .stats-grid {
-                grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
                 gap: 12px;
             }
+
             .stat-card {
                 padding: 16px;
             }
+
             .stat-info h3 {
-                font-size: 1.2rem;
+                font-size: 1.4rem;
+            }
+
+            .card {
+                padding: 16px;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .dashboard-header {
+                flex-direction: column;
+                align-items: flex-start;
             }
         }
     </style>
-</head>
+@endpush
 
 @section('main')
 <div class="dashboard">
-    <h1>
-        <i class='bx bxs-dashboard'></i>
-        Dashboard Administrativo
-    </h1>
+    <div class="dashboard-header">
+        <div>
+            <h1>
+                <i class='bx bxs-dashboard'></i>
+                Dashboard
+            </h1>
+            <span class="header-accent"></span>
+        </div>
+        <span class="dashboard-date">
+            <i class='bx bx-calendar' style="margin-right: 4px;"></i>
+            {{ now()->format('d/m/Y') }}
+        </span>
+    </div>
 
     <div class="stats-grid">
         <div class="stat-card">
@@ -364,20 +538,20 @@
                 <span class="hora-label">{{ \Carbon\Carbon::parse($horario->hora)->format('H:i') }}</span>
                 <div class="horario-bar-track">
                     <div class="horario-bar-fill" style="width: {{ ($horario->total / $maxTotal) * 100 }}%;">
-                        {{ $horario->total }} 
+                        {{ $horario->total }}
                     </div>
                 </div>
             </div>
             @empty
-            <p style="color: #6b7280;">No hay datos disponibles</p>
+            <p>No hay datos disponibles</p>
             @endforelse
         </div>
     </div>
 
-    <div class="card" style="margin-top: 24px;">
+    <div class="card">
         <h2><i class='bx bx-receipt'></i> Últimas reservas</h2>
         @if($ultimasReservas->isEmpty())
-        <p style="color: #6b7280;">No hay reservas registradas</p>
+        <p>No hay reservas registradas</p>
         @else
         <table class="table-dashboard">
             <thead>
@@ -393,17 +567,17 @@
             <tbody>
                 @foreach($ultimasReservas as $reserva)
                 <tr>
-                    <td>#{{ $reserva->id }}</td>
+                    <td style="font-weight: 600; color: var(--text-primary);">#{{ $reserva->id }}</td>
                     <td>{{ $reserva->user->name }}</td>
                     <td>{{ \Carbon\Carbon::parse($reserva->horario->fecha)->format('d/m') }}
                         {{ \Carbon\Carbon::parse($reserva->horario->hora)->format('H:i') }}</td>
-                    <td>${{ number_format($reserva->precio->valor, 0, ',', '.') }}</td>
+                    <td style="font-weight: 600;">${{ number_format($reserva->precio->valor, 0, ',', '.') }}</td>
                     <td>
                         <span class="badge-estado badge-{{ strtolower($reserva->estado) }}">
                             {{ $reserva->estado }}
                         </span>
                     </td>
-                    <td>{{ $reserva->created_at->format('d/m/Y H:i') }}</td>
+                    <td>{{ $reserva->created_at->format('d/m H:i') }}</td>
                 </tr>
                 @endforeach
             </tbody>
@@ -412,6 +586,7 @@
     </div>
 </div>
 
+@push('scripts')
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const ctx = document.getElementById('reservasChart').getContext('2d');
@@ -429,12 +604,15 @@
                 datasets: [{
                     label: 'Reservas',
                     data: data,
-                    borderColor: '#4facfe',
-                    backgroundColor: 'rgba(79, 172, 254, 0.1)',
+                    borderColor: '#00f593',
+                    backgroundColor: 'rgba(0, 245, 147, 0.06)',
                     fill: true,
                     tension: 0.4,
                     pointRadius: 3,
-                    pointBackgroundColor: '#4facfe',
+                    pointBackgroundColor: '#00f593',
+                    pointBorderColor: 'rgba(0, 245, 147, 0.3)',
+                    pointHoverRadius: 5,
+                    pointHoverBackgroundColor: '#00f593',
                     borderWidth: 2
                 }]
             },
@@ -446,20 +624,27 @@
                 },
                 scales: {
                     x: {
-                        grid: { display: false },
-                        ticks: { font: { size: 10 } }
+                        grid: { display: false, color: 'rgba(255,255,255,0.03)' },
+                        ticks: {
+                            font: { size: 10, family: 'Outfit' },
+                            color: 'rgba(240,244,255,0.4)'
+                        }
                     },
                     y: {
                         beginAtZero: true,
                         ticks: {
                             stepSize: 1,
-                            font: { size: 10 }
+                            font: { size: 10, family: 'Outfit' },
+                            color: 'rgba(240,244,255,0.4)'
                         },
-                        grid: { color: '#f0f0f0' }
+                        grid: {
+                            color: 'rgba(255,255,255,0.04)'
+                        }
                     }
                 }
             }
         });
     });
 </script>
+@endpush
 @endsection
