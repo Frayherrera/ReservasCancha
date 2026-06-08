@@ -24,6 +24,8 @@
 
 
 <body>
+    <button class="sidebar-toggle" onclick="toggleSidebar()">☰</button>
+    <div class="sidebar-overlay" onclick="toggleSidebar()"></div>
     <div class="wrapper"> <!-- Contenedor para el sidebar y el contenido principal -->
         @include('components.sidebar') <!-- Sidebar aquí -->
         <div class="main-content"> <!-- Contenido principal -->
@@ -31,6 +33,12 @@
         </div>
     </div>
     
+    <script>
+    function toggleSidebar() {
+        document.querySelector('.sidebar').classList.toggle('open');
+        document.querySelector('.sidebar-overlay').classList.toggle('show');
+    }
+    </script>
     <script src="{{ asset('js/app.js') }}"></script>
     @stack('scripts')
 

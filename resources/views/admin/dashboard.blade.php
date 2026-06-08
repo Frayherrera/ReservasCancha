@@ -432,6 +432,15 @@
             .card {
                 padding: 16px;
             }
+
+            .table-scroll {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            .table-scroll table {
+                min-width: 600px;
+            }
         }
 
         @media (max-width: 400px) {
@@ -553,6 +562,7 @@
         @if($ultimasReservas->isEmpty())
         <p>No hay reservas registradas</p>
         @else
+        <div class="table-scroll">
         <table class="table-dashboard">
             <thead>
                 <tr>
@@ -582,6 +592,7 @@
                 @endforeach
             </tbody>
         </table>
+        </div>
         @endif
     </div>
 </div>
