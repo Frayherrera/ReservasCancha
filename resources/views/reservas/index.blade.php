@@ -1,6 +1,4 @@
 @extends('layouts.app')
-
-@push('styles')
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestión de Reservas</title>
@@ -625,8 +623,6 @@
             }
         }
     </style>
-@endpush
-
 @section('main')
 <div class="reservas-page">
     <div class="page-header">
@@ -793,7 +789,7 @@
     </div>
 </div>
 
-@push('scripts')
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
     let reagendarModalInstance = null;
