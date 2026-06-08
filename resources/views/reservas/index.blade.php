@@ -600,6 +600,53 @@
             justify-content: center;
         }
 
+        .pagination-wrap .pagination {
+            display: flex;
+            gap: 4px;
+            flex-wrap: wrap;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .pagination-wrap .page-item .page-link {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 36px;
+            height: 36px;
+            padding: 0 10px;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius-sm);
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            font-weight: 500;
+            font-family: 'Outfit', sans-serif;
+            text-decoration: none;
+            transition: border-color 0.25s, background 0.25s, color 0.25s, transform 0.2s;
+        }
+
+        .pagination-wrap .page-item .page-link:hover {
+            background: rgba(255, 255, 255, 0.04);
+            border-color: rgba(255, 255, 255, 0.12);
+            color: var(--text-primary);
+            transform: translateY(-1px);
+        }
+
+        .pagination-wrap .page-item.active .page-link {
+            background: var(--pitch-green);
+            border-color: var(--pitch-green);
+            color: #0b0f1c;
+            font-weight: 700;
+            box-shadow: 0 0 12px var(--pitch-green-glow);
+        }
+
+        .pagination-wrap .page-item.disabled .page-link {
+            opacity: 0.3;
+            pointer-events: none;
+        }
+
         @media (max-width: 900px) {
             .kanban {
                 grid-template-columns: 1fr;
