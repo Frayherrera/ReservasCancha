@@ -29,7 +29,7 @@ class HomeController extends Controller
 
         $proximosPartidos = Reserva::with('horario', 'precio')
             ->where('user_id', $user->id)
-            ->where('estado', 'Aprobada')
+            ->where('reservas.estado', 'Aprobada')
             ->join('horarios', function ($join) {
                 $join->on('reservas.horario_id', '=', 'horarios.id')
                      ->where('horarios.fecha', '>=', now()->toDateString());
