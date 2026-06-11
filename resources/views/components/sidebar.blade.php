@@ -1,6 +1,6 @@
 <div class="sidebar">
     <div class="logo">
-        <img style="margin: 0 auto;width: fit-content;" src="/img/logo.png">
+        <img style="margin: 0 auto;width: fit-content;" src="{{ asset('img/logo.png') . '?v=' . filemtime(public_path('img/logo.png')) }}" alt="Logo">
     </div>
     <nav class="nav-menu">
 

@@ -545,7 +545,7 @@
 
     <div class="hero">
         <div class="hero-content">
-            <img src="./img/logo.png" alt="Logo" class="logo-img">
+            <img src="{{ asset('img/logo.png') . '?v=' . filemtime(public_path('img/logo.png')) }}" alt="Logo" class="logo-img">
             <h1>¿Qué horario te gustaría <span>reservar</span>?</h1>
             <p>
                 Reserva tu espacio para jugar fútbol con tus amigos. Consulta la
