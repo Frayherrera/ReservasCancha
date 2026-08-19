@@ -560,24 +560,80 @@
             <div id="heroCarousel" class="carousel slide" data-bs-ride="carousel">
                 <div class="carousel-inner">
                     <div class="carousel-item active">
-                        <img src="./img/fondo.png" class="d-block" alt="Cancha de fútbol 1">
+                        <img src="./img/cancha/cancha-1.jpeg" class="d-block" alt="Cancha de fútbol 1">
                         <div class="carousel-caption">
                             <h5>Cancha profesional</h5>
                             <p>Césped sintético de última generación</p>
                         </div>
                     </div>
                     <div class="carousel-item">
-                        <img src="./img/fondo.png" class="d-block" alt="Cancha de fútbol 2">
+                        <img src="./img/cancha/cancha-2.jpeg" class="d-block" alt="Cancha de fútbol 2">
                         <div class="carousel-caption">
                             <h5>Iluminación LED</h5>
                             <p>Partidos nocturnos con la mejor visibilidad</p>
                         </div>
                     </div>
                     <div class="carousel-item">
-                        <img src="./img/fondo.png" class="d-block" alt="Cancha de fútbol 3">
+                        <img src="./img/cancha/cancha-3.jpeg" class="d-block" alt="Cancha de fútbol 3">
                         <div class="carousel-caption">
                             <h5>Vestidores y duchas</h5>
                             <p>Comodidad completa para tu equipo</p>
+                        </div>
+                    </div>
+                    <div class="carousel-item">
+                        <img src="./img/cancha/cancha-4.jpeg" class="d-block" alt="Cancha de fútbol 4">
+                        <div class="carousel-caption">
+                            <h5>Amplio espacio</h5>
+                            <p>Tu cancha favorita te espera</p>
+                        </div>
+                    </div>
+                    <div class="carousel-item">
+                        <img src="./img/cancha/cancha-5.jpeg" class="d-block" alt="Cancha de fútbol 5">
+                        <div class="carousel-caption">
+                            <h5>Instalaciones modernas</h5>
+                            <p>Todo lo que necesitas para jugar</p>
+                        </div>
+                    </div>
+                    <div class="carousel-item">
+                        <img src="./img/cancha/cancha-6.jpeg" class="d-block" alt="Cancha de fútbol 6">
+                        <div class="carousel-caption">
+                            <h5>Calidad garantizada</h5>
+                            <p>Experiencia única en cada partido</p>
+                        </div>
+                    </div>
+                    <div class="carousel-item">
+                        <img src="./img/cancha/cancha-7.jpeg" class="d-block" alt="Cancha de fútbol 7">
+                        <div class="carousel-caption">
+                            <h5>Áreas verdes</h5>
+                            <p>Disfruta del mejor ambiente</p>
+                        </div>
+                    </div>
+                    <div class="carousel-item">
+                        <img src="./img/cancha/cancha-8.jpeg" class="d-block" alt="Cancha de fútbol 8">
+                        <div class="carousel-caption">
+                            <h5>seguridad y confort</h5>
+                            <p>Juega tranquilo con tus amigos</p>
+                        </div>
+                    </div>
+                    <div class="carousel-item">
+                        <img src="./img/cancha/cancha-9.jpeg" class="d-block" alt="Cancha de fútbol 9">
+                        <div class="carousel-caption">
+                            <h5>Detailles que importan</h5>
+                            <p>Instalaciones pensadas para ti</p>
+                        </div>
+                    </div>
+                    <div class="carousel-item">
+                        <img src="./img/cancha/cancha-10.jpeg" class="d-block" alt="Cancha de fútbol 10">
+                        <div class="carousel-caption">
+                            <h5>Reserva ya</h5>
+                            <p>No esperes más para jugar</p>
+                        </div>
+                    </div>
+                    <div class="carousel-item">
+                        <img src="./img/cancha/cancha-11.jpeg" class="d-block" alt="Cancha de fútbol 11">
+                        <div class="carousel-caption">
+                            <h5>Tu partido te espera</h5>
+                            <p>Haz tu reserva ahora</p>
                         </div>
                     </div>
                 </div>
