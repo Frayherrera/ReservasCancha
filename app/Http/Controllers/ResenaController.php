@@ -20,6 +20,25 @@ class ResenaController extends Controller
         return view('resenas.index', compact('resenas', 'promedio', 'total'));
     }
 
+    public function mis()
+    {
+        $pendientes = Reserva::with('horario')
+            ->where('user_id', auth()->id())
+            ->where('estado', 'Aprobada')
+            ->whereDoesntHave('resena')
+            ->get()
+            ->sortBy(fn ($reserva) => \Carbon\Carbon::parse($reserva->horario->fecha)->format('Y-m-d') . ' ' . $reserva->horario->hora);
+
+        $misResenas = Resena::with('reserva.horario')
+            ->where('user_id', auth()->id())
+            ->orderByDesc('created_at')
+            ->get();
+
+        $promedioPersonal = Resena::where('user_id', auth()->id())->avg('puntuacion');
+
+        return view('resenas.mis', compact('pendientes', 'misResenas', 'promedioPersonal'));
+    }
+
     public function create(Reserva $reserva)
     {
         if ($reserva->user_id !== auth()->id()) {
@@ -58,7 +77,7 @@ class ResenaController extends Controller
             'comentario' => $request->comentario,
         ]);
 
-        return redirect()->route('resenas.index')->with('success', 'Gracias por tu calificación.');
+        return redirect()->route('resenas.mis')->with('success', 'Gracias por tu calificación.');
     }
 
     public function destroy(Resena $resena)

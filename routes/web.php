@@ -44,6 +44,7 @@ Route::get('/horarios-disponibles', [ReservaController::class, 'horariosDisponib
 Route::get('/reservas/{id}', [ReservaController::class, 'show'])->name('reservas.show');
 
 Route::get('/resenas', [App\Http\Controllers\ResenaController::class, 'index'])->name('resenas.index');
+Route::get('/resenas/mis-resenas', [App\Http\Controllers\ResenaController::class, 'mis'])->middleware('auth')->name('resenas.mis');
 Route::get('/resenas/crear/{reserva}', [App\Http\Controllers\ResenaController::class, 'create'])->middleware('auth')->name('resenas.create');
 Route::post('/resenas', [App\Http\Controllers\ResenaController::class, 'store'])->middleware('auth')->name('resenas.store');
 Route::delete('/resenas/{resena}', [App\Http\Controllers\ResenaController::class, 'destroy'])->middleware('auth')->name('resenas.destroy');

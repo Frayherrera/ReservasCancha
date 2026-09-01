@@ -15,7 +15,8 @@
         <a href="{{route('admin.pagos.index')}}" class="nav-item {{ request()->routeIs('admin.pagos.*') ? 'active' : '' }}">Pagos</a>
         <a href="{{route('admin.users.index')}}" class="nav-item {{ request()->routeIs('admin.users.*') ? 'active' : '' }}">Usuarios</a>
         @endif
-        <a href="{{route('resenas.index')}}" class="nav-item {{ request()->routeIs('resenas.*') ? 'active' : '' }}">Reseñas</a>
+        <a href="{{route('resenas.index')}}" class="nav-item {{ request()->routeIs('resenas.index') ? 'active' : '' }}">Reseñas</a>
+        <a href="{{route('resenas.mis')}}" class="nav-item {{ request()->routeIs('resenas.mis') ? 'active' : '' }}">Mis reseñas</a>
 
         <a href="{{route('user.edit')}}" class="nav-item {{ request()->routeIs('user.edit') ? 'active' : '' }}">Configurar</a>
         <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
