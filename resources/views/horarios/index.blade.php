@@ -952,7 +952,7 @@
     <div class="horarios-grid" id="horariosGrid">
         @foreach($horarios as $horario)
         <div class="hora-card {{ strtolower(str_replace(' ', '-', $horario->estado)) }}"
-        data-fecha="{{ $horario->fecha }}"
+        data-fecha="{{ \Carbon\Carbon::parse($horario->fecha)->format('Y-m-d') }}"
         data-estado="{{ $horario->estado }}">
         <div class="hora">{{ \Carbon\Carbon::parse($horario->hora)->format('H:i') }}</div>
         <div class="fecha">{{ \Carbon\Carbon::parse($horario->fecha)->format('d/m/Y') }}</div>
@@ -987,7 +987,7 @@
         </thead>
         <tbody>
             @foreach($horarios as $horario)
-            <tr data-fecha="{{ $horario->fecha }}" data-estado="{{ $horario->estado }}">
+            <tr data-fecha="{{ \Carbon\Carbon::parse($horario->fecha)->format('Y-m-d') }}" data-estado="{{ $horario->estado }}">
                 <td>{{ \Carbon\Carbon::parse($horario->fecha)->format('d/m/Y') }}</td>
                 <td><strong>{{ \Carbon\Carbon::parse($horario->hora)->format('H:i') }}</strong></td>
                 <td>
