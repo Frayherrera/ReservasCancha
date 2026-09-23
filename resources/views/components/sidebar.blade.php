@@ -5,7 +5,6 @@
     <nav class="nav-menu">
 
         @if (auth()->check())
-        <a href="{{route('home')}}" class="nav-item {{ request()->routeIs('home') ? 'active' : '' }}">Inicio</a>
         <a href="{{route('horarios.index')}}" class="nav-item {{ request()->routeIs('horarios.index') ? 'active' : '' }}">Horario cancha</a>
         @if(auth()->user()->hasRole('administrador'))
         <a href="{{route('admin.dashboard')}}" class="nav-item {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">Dashboard</a>
